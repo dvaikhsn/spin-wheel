@@ -381,4 +381,5 @@ def display_list_in_columns(title, items, items_per_col=5, max_height=300):
     st.markdown("</div>", unsafe_allow_html=True)
 
 display_list_in_columns("📋 Sisa Peserta", st.session_state.participants)
-display_list_in_columns("🏆 Pemenang Doorprize (Terbaru Paling Bawah)", st.session_state.winners)
+display_list_in_columns("🏆 Pemenang Doorprize", st.session_state.winners)
+
