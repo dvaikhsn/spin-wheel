@@ -5,21 +5,36 @@ import json
 import math
 
 # ============================================
-# PAGE CONFIG
+# 1. PAGE CONFIG (HARUS PALING ATAS)
 # ============================================
-st.set_page_config(page_title="Spin Wheel H10", layout="wide")
+st.set_page_config(page_title="Spin Wheel SATRIA-1", layout="wide")
 
-# =============== LOGO ===============
-colA, colB = st.columns([1, 10])
-with colA:
-    st.write("") 
-with colB:
-    st.write("") 
+# ============================================
+# 2. LOGO SECTION (REVISI: CENTER)
+# ============================================
+# Kita pakai kolom spacer di kiri dan kanan untuk mendorong logo ke tengah
+# Rasio: [Spacer, Logo1, Logo2, Spacer]
+c_spacer_L, c_logo1, c_logo2, c_spacer_R = st.columns([4, 1.5, 1.5, 4])
 
+with c_logo1:
+    # Gunakan use_container_width=True (Streamlit baru) atau use_column_width=True
+    # Agar logo menyesuaikan lebar kolom yang sudah kita set sempit
+    try:
+        st.image("snt.png", use_container_width=True) 
+    except:
+        st.write("SNT")
+
+with c_logo2:
+    try:
+        st.image("bakti.png", use_container_width=True)
+    except:
+        st.write("BAKTI")
+
+# Jarak sedikit ke judul
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ============================================
-# CUSTOM CSS 
+# 3. CUSTOM CSS 
 # ============================================
 st.markdown("""
 <style>
@@ -27,35 +42,36 @@ body {
     background: radial-gradient(circle at top, #1c1c25, #0e0e11 70%);
     color: white;
 }
+
+/* JUDUL */
 .title-main {
     text-align: center;
-    font-size: 65px;
+    font-size: 50px;
     font-family: "Montserrat", sans-serif;
     font-weight: 700;
     color: #ffffff;
     text-shadow: 0 0 18px #603bff;
-    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 .sub-title {
     text-align: center;
-    font-size: 26px;
+    font-size: 20px;
     color: #b9b9b9;
+    margin-bottom: 30px;
 }
-hr {
-    border: none;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #6c4bff, transparent);
-    margin: 30px 0;
-}
+
+/* INPUT CARD */
 .card {
     background: rgba(255, 255, 255, 0.06);
     border-radius: 18px;
-    padding: 25px 30px;
+    padding: 20px 30px;
     border: 1px solid rgba(130,130,130,0.15);
     box-shadow: 0 8px 25px rgba(0,0,0,0.35);
     backdrop-filter: blur(12px);
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
+
 /* LIST BOXES */
 .box {
     background: rgba(255,255,255,0.05);
@@ -67,7 +83,7 @@ hr {
     margin-top: 25px;
 }
 .title-box {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 600;
     color: #dcdcdc;
     margin-bottom: 10px;
@@ -76,36 +92,53 @@ hr {
 }
 .list-item {
     padding: 4px 0;
-    font-size: 16px;
+    font-size: 14px;
     color: #e6e6e6;
 }
-/* SPIN BUTTON */
+
+/* PEMISAH */
+hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #6c4bff, transparent);
+    margin: 30px 0;
+}
+
+/* TOMBOL (CSS AGAR PRESISI DI TENGAH) */
 div.stButton > button {
     background: linear-gradient(135deg, #7a5bff, #6040ff);
     color: white;
     border-radius: 14px;
-    padding: 10px 45px;
-    font-size: 24px;
+    padding: 12px 50px;
+    font-size: 20px;
     font-weight: 700;
     border: none;
     box-shadow: 0 0 22px #6d49ff;
-    width: 100%;
     transition: 0.3s;
+    display: block; 
+    margin: 0 auto; /* Posisi Tengah */
+    width: fit-content;
 }
 div.stButton > button:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 30px #8c6dff;
+    transform: scale(1.05);
+    box-shadow: 0 0 35px #8c6dff;
+    border-color: white;
 }
+div.stButton > button:disabled {
+    background: #333;
+    color: #777;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
 # ============================================
-# HELPER: HTML/JS SPIN WHEEL (FIXED TEXT)
+# 4. HELPER: HTML/JS SPIN WHEEL
 # ============================================
 def spin_wheel_component(items, winner_name):
-    # Warna-warna segmen roda
     colors = ["#6040ff", "#1f1f2e", "#7a5bff", "#2c2c35", "#5a42ff", "#14141a"]
-    
     items_json = json.dumps(items)
     
     html_code = f"""
@@ -114,71 +147,33 @@ def spin_wheel_component(items, winner_name):
     <head>
         <style>
             body {{ 
-                margin: 0; 
-                display: flex; 
-                justify-content: center; 
-                align-items: center; 
-                background: transparent; 
-                overflow: hidden; 
-                font-family: 'Arial', sans-serif;
+                margin: 0; display: flex; justify-content: center; align-items: center; 
+                background: transparent; overflow: hidden; font-family: 'Arial', sans-serif;
             }}
-            
             #container {{
-                position: relative;
-                width: 500px;
-                height: 550px;
-                display: flex;
-                justify-content: center;
+                position: relative; width: 500px; height: 550px; display: flex; justify-content: center;
             }}
-
             canvas {{ display: block; }}
-
             #pointer {{
-                width: 0; 
-                height: 0; 
+                width: 0; height: 0; 
                 border-left: 20px solid transparent;
                 border-right: 20px solid transparent;
                 border-top: 40px solid #2cff9b; 
-                position: absolute;
-                top: 0px; 
-                left: 50%;
-                transform: translateX(-50%); 
-                z-index: 10;
+                position: absolute; top: 0px; left: 50%;
+                transform: translateX(-50%); z-index: 10;
                 filter: drop-shadow(0 0 8px #2cff9b);
             }}
-
             #winner-modal {{
-                display: none;
-                position: absolute;
-                top: 45%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(0,0,0,0.9);
-                padding: 20px 40px;
-                border-radius: 15px;
-                border: 2px solid #2cff9b;
-                text-align: center;
-                z-index: 20;
+                display: none; position: absolute; top: 45%; left: 50%;
+                transform: translate(-50%, -50%); background: rgba(0,0,0,0.9);
+                padding: 20px 40px; border-radius: 15px; border: 2px solid #2cff9b;
+                text-align: center; z-index: 20;
                 box-shadow: 0 0 30px rgba(44, 255, 155, 0.5);
                 animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 min-width: 320px;
             }}
-
-            #winner-modal h2 {{
-                margin: 0;
-                font-size: 18px;
-                color: #ffffff;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }}
-
-            #winner-modal h1 {{
-                margin: 10px 0 0 0;
-                font-size: 34px;
-                color: #2cff9b;
-                text-shadow: 0 0 15px #27d477;
-            }}
-
+            #winner-modal h2 {{ margin: 0; font-size: 18px; color: #ffffff; text-transform: uppercase; letter-spacing: 1px; }}
+            #winner-modal h1 {{ margin: 10px 0 0 0; font-size: 34px; color: #2cff9b; text-shadow: 0 0 15px #27d477; }}
             @keyframes popIn {{
                 0% {{ transform: translate(-50%, -50%) scale(0); opacity: 0; }}
                 100% {{ transform: translate(-50%, -50%) scale(1); opacity: 1; }}
@@ -189,101 +184,66 @@ def spin_wheel_component(items, winner_name):
         <div id="container">
             <div id="pointer"></div>
             <canvas id="wheel" width="500" height="500"></canvas>
-            
             <div id="winner-modal">
                 <h2>Selamat Kepada:</h2>
                 <h1>{winner_name}</h1>
             </div>
         </div>
-
         <script>
             const canvas = document.getElementById('wheel');
             const ctx = canvas.getContext('2d');
             const names = {items_json};
             const winner = "{winner_name}";
             const colors = {json.dumps(colors)};
-            
             let startAngle = 0;
             const arc = Math.PI * 2 / names.length;
-            let spinTimeout = null;
-            
             let spinTime = 0;
             let spinTimeTotal = 0;
 
             function drawRouletteWheel() {{
                 ctx.clearRect(0, 0, 500, 500);
-                
                 const outsideRadius = 220;
                 const insideRadius = 40;
                 const centerX = 250;
                 const centerY = 250;
-
                 for(let i = 0; i < names.length; i++) {{
                     const angle = startAngle + i * arc;
                     ctx.fillStyle = colors[i % colors.length];
-                    
-                    // GAMBAR JURING (PIZZA SLICE)
                     ctx.beginPath();
                     ctx.arc(centerX, centerY, outsideRadius, angle, angle + arc, false);
                     ctx.arc(centerX, centerY, insideRadius, angle + arc, angle, true);
                     ctx.fill();
-                    
                     ctx.strokeStyle = "rgba(0,0,0,0.2)";
                     ctx.lineWidth = 1;
                     ctx.stroke();
-
-                    // --- BAGIAN TEKS RADIAL (PIZZA STYLE) ---
                     ctx.save();
-                    
-                    // 1. Pindahkan titik nol ke pusat lingkaran
                     ctx.translate(centerX, centerY);
-                    
-                    // 2. Putar kanvas agar menghadap ke tengah juring
                     ctx.rotate(angle + arc / 2);
-                    
-                    // 3. Styling Teks
-                    ctx.textAlign = "right"; // Rata kanan (agar nempel di sisi luar)
+                    ctx.textAlign = "right";
                     ctx.fillStyle = "white";
                     ctx.font = "bold 15px Arial";
-                    
                     const text = names[i];
                     const displayText = text.length > 18 ? text.substring(0, 17) + ".." : text;
-                    
-                    // 4. Tulis teks
-                    // Kita tulis di posisi X = outsideRadius - 20 (sedikit masuk ke dalam)
-                    // Posisi Y = 5 (sedikit geser ke bawah agar pas di tengah vertikal)
                     ctx.fillText(displayText, outsideRadius - 20, 5);
-                    
                     ctx.restore();
                 }} 
             }}
 
-            function easeOut(t, b, c, d) {{
-                const ts = (t/=d)*t;
-                const tc = ts*t;
-                return b+c*(tc + -3*ts + 3*t);
-            }}
-
             function startSpin() {{
+                if (!winner) return;
                 const winnerIndex = names.indexOf(winner);
-                
-                // Logika Matematika agar berhenti di jam 12 (Atas)
+                if (winnerIndex === -1) return;
                 const anglePerItem = (2 * Math.PI) / names.length;
                 const winnerCenterAngle = (winnerIndex * anglePerItem) + (anglePerItem / 2);
-                
-                // 1.5 PI adalah posisi jam 12 pada sistem koordinat canvas (yang dimulai dari jam 3)
                 const rotationLoops = 10 * 2 * Math.PI; 
                 let targetStopAngle = (1.5 * Math.PI) - winnerCenterAngle + rotationLoops;
-
                 spinTime = 0;
                 spinTimeTotal = 6500;
-                
                 const finalAngle = targetStopAngle;
 
                 function animate(timestamp) {{
                     if (!window.startAnimTime) window.startAnimTime = timestamp;
                     const progress = timestamp - window.startAnimTime;
-                    
                     if (progress < spinTimeTotal) {{
                         const t = progress / spinTimeTotal;
                         const ease = 1 - Math.pow(1 - t, 3); 
@@ -298,10 +258,8 @@ def spin_wheel_component(items, winner_name):
                 }}
                 requestAnimationFrame(animate);
             }}
-
             drawRouletteWheel();
             setTimeout(startSpin, 500);
-
         </script>
     </body>
     </html>
@@ -309,20 +267,18 @@ def spin_wheel_component(items, winner_name):
     components.html(html_code, height=600)
 
 # ============================================
-# TITLE
+# 5. TITLE & SUBTITLE
 # ============================================
-st.markdown("<div class='title-main'>TRAINING H10 BAKTI</div>", unsafe_allow_html=True)
-st.markdown("<div class='sub-title'>Spin Wheel Random Picker</div>", unsafe_allow_html=True)
+st.markdown("<div class='title-main'>TRAINING SATRIA-1</div>", unsafe_allow_html=True)
+st.markdown("<div class='sub-title'>Spin Doorprize Random Picker</div>", unsafe_allow_html=True)
 
 # ============================================
-# SESSION STATE
+# 6. SESSION STATE
 # ============================================
 if "participants" not in st.session_state:
     st.session_state.participants = []
-
 if "winners" not in st.session_state:
     st.session_state.winners = []
-
 if "preset_winners" not in st.session_state:
     st.session_state.preset_winners = [
         "Rika Sari", "Aldi Hermawan", "Felicia Dewi", "Bagas Prakoso", "Clara Andini",
@@ -336,16 +292,15 @@ if "preset_winners" not in st.session_state:
         "Della Kartika", "Vina Maharani", "Yoga Permana", "Joko Prabowo", "Salsa Maharani",
         "Aldi Kurniawan"
     ]
-
 if "preset_index" not in st.session_state:
     st.session_state.preset_index = 0
-
-if "show_wheel" not in st.session_state:
-    st.session_state.show_wheel = False
+if "wheel_state" not in st.session_state:
+    st.session_state.wheel_state = "idle" 
+if "current_winner" not in st.session_state:
     st.session_state.current_winner = ""
 
 # ============================================
-# INPUT CARD
+# 7. INPUT CARD
 # ============================================
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 names_input = st.text_input("Masukkan daftar nama (pisahkan dengan koma):", key="input_names")
@@ -353,58 +308,62 @@ if st.button("Set Daftar Nama"):
     st.session_state.participants = [n.strip() for n in names_input.split(",") if n.strip()]
     st.session_state.winners = []
     st.session_state.preset_index = 0
-    st.session_state.show_wheel = False
+    st.session_state.wheel_state = "idle"
+    st.session_state.current_winner = ""
     st.success("Daftar nama berhasil diperbarui!")
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ============================================
-# AREA RODA BERPUTAR (WHEEL AREA)
+# 8. MAIN WHEEL & LOGIC
 # ============================================
-placeholder_wheel = st.empty()
+wheel_placeholder = st.empty()
+
+# Placeholder logic
+if len(st.session_state.participants) == 0:
+    display_participants = ["SATRIA-1", "DOORPRIZE", "BAKTI", "TRAINING", "SATRIA-1", "DOORPRIZE"]
+    is_dummy_wheel = True
+else:
+    display_participants = st.session_state.participants
+    is_dummy_wheel = False
+
+with wheel_placeholder:
+    display_winner_arg = st.session_state.current_winner if st.session_state.wheel_state == "spinning" else ""
+    spin_wheel_component(display_participants, display_winner_arg)
+
+st.markdown("<br>", unsafe_allow_html=True)
 
 # ============================================
-# TOMBOL SPIN
+# 9. CENTERED BUTTON
 # ============================================
-if not st.session_state.show_wheel:
-    col_spin, _ = st.columns([1,2])
-    with col_spin:
-        spin_btn = st.button("SPIN! 🎉")
-
-    if spin_btn:
+st.container()
+if st.session_state.wheel_state == "idle":
+    if st.button("SPIN! 🎉", disabled=is_dummy_wheel): 
         if len(st.session_state.participants) == 0:
-            st.error("Tidak ada peserta tersisa!")
+            st.error("Masukkan nama peserta terlebih dahulu!")
         else:
-            # 1. TENTUKAN PEMENANG
             if st.session_state.preset_index < len(st.session_state.preset_winners):
                 candidate = st.session_state.preset_winners[st.session_state.preset_index]
                 winner = candidate if candidate in st.session_state.participants else random.choice(st.session_state.participants)
                 st.session_state.preset_index += 1
             else:
                 winner = random.choice(st.session_state.participants)
-            
-            # 2. UPDATE STATE
             st.session_state.current_winner = winner
-            st.session_state.show_wheel = True
+            st.session_state.wheel_state = "spinning"
             st.rerun()
-
-# ============================================
-# LOGIKA TAMPILAN RODA
-# ============================================
-if st.session_state.show_wheel:
-    with placeholder_wheel.container():
-        spin_wheel_component(st.session_state.participants, st.session_state.current_winner)
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("Lanjut / Simpan Pemenang"):
-            if st.session_state.current_winner in st.session_state.participants:
-                st.session_state.winners.append(st.session_state.current_winner)
-                st.session_state.participants.remove(st.session_state.current_winner)
-            st.session_state.show_wheel = False
-            st.rerun()
+else:
+    if st.button("Lanjut / Simpan Pemenang"):
+        if st.session_state.current_winner in st.session_state.participants:
+            st.session_state.winners.append(st.session_state.current_winner)
+            st.session_state.participants.remove(st.session_state.current_winner)
+        st.session_state.wheel_state = "idle"
+        st.session_state.current_winner = ""
+        st.rerun()
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# =============== PANEL PESERTA & PEMENANG DI BAWAH =================
+# ============================================
+# 10. BOTTOM LISTS
+# ============================================
 def display_list_in_columns(title, items, items_per_col=5, max_height=300):
     st.markdown(f"<div class='box' style='max-height:{max_height}px; overflow-y:auto;'>", unsafe_allow_html=True)
     st.markdown(f"<div class='title-box'>{title} <span style='font-size:14px; opacity:0.6'>({len(items)})</span></div>", unsafe_allow_html=True)
@@ -422,4 +381,4 @@ def display_list_in_columns(title, items, items_per_col=5, max_height=300):
     st.markdown("</div>", unsafe_allow_html=True)
 
 display_list_in_columns("📋 Sisa Peserta", st.session_state.participants)
-display_list_in_columns("🏆 Pemenang Doorprize", st.session_state.winners)
+display_list_in_columns("🏆 Pemenang Doorprize (Terbaru Paling Bawah)", st.session_state.winners)
