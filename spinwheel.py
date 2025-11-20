@@ -320,7 +320,7 @@ wheel_placeholder = st.empty()
 
 # Placeholder logic
 if len(st.session_state.participants) == 0:
-    display_participants = ["SATRIA-1", "DOORPRIZE", "BAKTI", "TRAINING", "SATRIA-1", "DOORPRIZE"]
+    display_participants = ["SATRIA-1", "SNT", "BAKTI", "TRAINING", "SATRIA-1", "BAKTI"]
     is_dummy_wheel = True
 else:
     display_participants = st.session_state.participants
@@ -382,4 +382,5 @@ def display_list_in_columns(title, items, items_per_col=5, max_height=300):
 
 display_list_in_columns("📋 Sisa Peserta", st.session_state.participants)
 display_list_in_columns("🏆 Pemenang Doorprize", st.session_state.winners)
+
 
