@@ -4,21 +4,13 @@ import random
 import json
 import math
 
-# ============================================
 # 1. PAGE CONFIG (HARUS PALING ATAS)
-# ============================================
 st.set_page_config(page_title="Spin Wheel SATRIA-1", layout="wide")
 
-# ============================================
-# 2. LOGO SECTION (REVISI: CENTER)
-# ============================================
-# Kita pakai kolom spacer di kiri dan kanan untuk mendorong logo ke tengah
-# Rasio: [Spacer, Logo1, Logo2, Spacer]
+# 2. LOGO SECTION 
 c_spacer_L, c_logo1, c_logo2, c_spacer_R = st.columns([4, 1.5, 1.5, 4])
 
 with c_logo1:
-    # Gunakan use_container_width=True (Streamlit baru) atau use_column_width=True
-    # Agar logo menyesuaikan lebar kolom yang sudah kita set sempit
     try:
         st.image("snt.png", use_container_width=True) 
     except:
@@ -33,9 +25,7 @@ with c_logo2:
 # Jarak sedikit ke judul
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ============================================
 # 3. CUSTOM CSS 
-# ============================================
 st.markdown("""
 <style>
 body {
@@ -134,9 +124,9 @@ div.stButton > button:disabled {
 </style>
 """, unsafe_allow_html=True)
 
-# ============================================
-# 4. HELPER: HTML/JS SPIN WHEEL
-# ============================================
+
+# 4. HTML/JS SPIN WHEEL
+
 def spin_wheel_component(items, winner_name):
     colors = ["#6040ff", "#1f1f2e", "#7a5bff", "#2c2c35", "#5a42ff", "#14141a"]
     items_json = json.dumps(items)
@@ -266,15 +256,15 @@ def spin_wheel_component(items, winner_name):
     """
     components.html(html_code, height=600)
 
-# ============================================
+
 # 5. TITLE & SUBTITLE
-# ============================================
+
 st.markdown("<div class='title-main'>TRAINING SATRIA-1</div>", unsafe_allow_html=True)
 st.markdown("<div class='sub-title'>Spin Doorprize Random Picker</div>", unsafe_allow_html=True)
 
-# ============================================
+
 # 6. SESSION STATE
-# ============================================
+
 if "participants" not in st.session_state:
     st.session_state.participants = []
 if "winners" not in st.session_state:
@@ -299,9 +289,9 @@ if "wheel_state" not in st.session_state:
 if "current_winner" not in st.session_state:
     st.session_state.current_winner = ""
 
-# ============================================
+
 # 7. INPUT CARD
-# ============================================
+
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 names_input = st.text_input("Masukkan daftar nama (pisahkan dengan koma):", key="input_names")
 if st.button("Set Daftar Nama"):
@@ -313,9 +303,9 @@ if st.button("Set Daftar Nama"):
     st.success("Daftar nama berhasil diperbarui!")
 st.markdown("</div>", unsafe_allow_html=True)
 
-# ============================================
+
 # 8. MAIN WHEEL & LOGIC
-# ============================================
+
 wheel_placeholder = st.empty()
 
 # Placeholder logic
@@ -332,9 +322,9 @@ with wheel_placeholder:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ============================================
+
 # 9. CENTERED BUTTON
-# ============================================
+
 st.container()
 if st.session_state.wheel_state == "idle":
     if st.button("SPIN! 🎉", disabled=is_dummy_wheel): 
@@ -361,9 +351,9 @@ else:
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# ============================================
+
 # 10. BOTTOM LISTS
-# ============================================
+
 def display_list_in_columns(title, items, items_per_col=5, max_height=300):
     st.markdown(f"<div class='box' style='max-height:{max_height}px; overflow-y:auto;'>", unsafe_allow_html=True)
     st.markdown(f"<div class='title-box'>{title} <span style='font-size:14px; opacity:0.6'>({len(items)})</span></div>", unsafe_allow_html=True)
@@ -382,6 +372,7 @@ def display_list_in_columns(title, items, items_per_col=5, max_height=300):
 
 display_list_in_columns("📋 Sisa Peserta", st.session_state.participants)
 display_list_in_columns("🏆 Pemenang Doorprize", st.session_state.winners)
+
 
 
 
